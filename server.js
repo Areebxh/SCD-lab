@@ -4,7 +4,11 @@ import dotenv from "dotenv";
 import path from 'path';
 import bodyParser from 'body-parser';
 import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+import userModel from './model/user.js';
 
+
+const __dirname = path.dirname(__filename);
 const app = express();
 dotenv.config();
 
@@ -26,3 +30,29 @@ mongoose.connection.on("disconnected", () => {
 mongoose.connection.on("connected", () => {
   console.log("mongoDB connected!");
 });
+
+app.get("/",function(req,res){
+    
+  res.sendFile(__dirname+"/index.html");
+  
+   
+  
+  })
+  
+  app.post("/",function(req,res){
+  
+   var user = new userModel({
+    name: req.body.uname
+     });
+
+    user.save();
+    
+    res.send("<h1>Your username '"+req.body.uname+"' has been stored in the DB. </h1>")
+   
+  
+  })
+  
+  app.listen(3000, () => {
+    connect();
+    console.log("Server is running on port 3000")
+  })
